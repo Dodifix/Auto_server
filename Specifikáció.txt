@@ -1,0 +1,12 @@
+# Spigot1.16.5 szerver készítő
+
+# Windows rendszeren futtatáshoz szükséged lesz egy futtatási környezetre, mint pl.: Git, Cygwin
+
+# Hogyan működik?
+	A script létrehoz egy mappát az asztalon, amelybe letölti a szerver.jar fájlt.
+	Létrehoz mellé egy, a szerver futtatásához szükséges indítófájlt, elindítja a szervert.
+	Elfogadja a felhasználói feltételeket, majd konfigurálja a szervert úgy, hogy hivatalos
+	Minecraft felhasználó nélkül is be lehessen lépni.
+
+# Jövőbeli tervek:
+	A script ellenőrzi, hogy java található-e a gépen, ha nem, akkor letölti
