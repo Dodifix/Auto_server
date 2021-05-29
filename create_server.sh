@@ -2,25 +2,52 @@
 
 cd
 cd desktop
-mkdir mc_server
+if [[ -d mc_server ]]
+then
 cd mc_server
-curl  https://cdn.getbukkit.org/spigot/spigot-1.16.5.jar -o server.jar
-echo "java -Xmx2048M -Xms2048M -jar server.jar" > start.bat
-ip=$(curl -s https://api.ipify.org)
-echo "A szerverhez ezen az ip címen lehet csatlakozni: $ip" > olvass_el.txt
 bash start.bat
+else
+    mkdir mc_server
+    cd mc_server
+    curl  https://cdn.getbukkit.org/spigot/spigot-1.16.5.jar -o server.jar
+    echo "java -Xmx2048M -Xms2048M -jar server.jar" > start.bat
+    ip=$(curl -s https://api.ipify.org)
+    echo "A szerverhez ezen az ip címen lehet csatlakozni: $ip" > olvass_el.txt
+    bash start.bat
+    clear
 
-clear
+    ###### felhasználási feltételek elfogadása ######
+    read -n 1 -s -r -p "Nyomj meg egy gombot a folytatáshoz. Ezzel elfogadod a felhasználási feltételeket. (https://account.mojang.com/documents/minecraft_eula)"
+    clear
+    sed 's/false/true/' eula.txt > eula_tmp.txt; mv eula_tmp.txt eula.txt
+    sleep 1
 
-read -n 1 -s -r -p "Nyomj meg egy gombot a folytatáshoz. Ezzel elfogadod a felhasználási feltételeket. (https://account.mojang.com/documents/minecraft_eula)"
+    ###### offline módra állítás ######
+    sed 's/online-mode=true/online-mode=false/' server.properties > prop_tmp.properties; mv prop_tmp.properties server.properties
+    sleep 1
 
-clear
+    ###### plugin letöltés ######
+    while :
+    do
+    echo -n "Szeretnél letölteni pár fontosabb plugint? (y/n)? "
+    read answer
+    clear
 
-sed 's/false/true/' eula.txt > eula_tmp.txt; mv eula_tmp.txt eula.txt
-sleep 1
-sed 's/online-mode=true/online-mode=false/' server.properties > prop_tmp.properties; mv prop_tmp.properties server.properties
-sleep 1
+    [ "$answer" != "${answer#[Yy]}" ] && mkdir plugins && cd plugins && curl https://dev.bukkit.org/projects/worldedit/files/latest -o worldedit.jar && break ||  [ "$answer" != "${answer#[Nn]}" ] && break || echo "(Kérlek az alábbiak közül válassz: igen: y ,nem: n )"  
+    sleep 2
+    done
 
 
-bash start.bat
+    ###### szerver indítása ######
+
+    while :
+    do
+    echo -n "Szeretnéd elindítani most a szervert? (y/n)? "
+    read answer
+    clear
+
+    [ "$answer" != "${answer#[Yy]}" ] && cd && cd desktop/mc_server && bash start.bat && break ||  [ "$answer" != "${answer#[Nn]}" ] && break || echo "(Kérlek az alábbiak közül válassz: igen: y ,nem: n )"  
+    sleep 2
+    done
+fi
 
